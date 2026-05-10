@@ -34,10 +34,12 @@ export default function NexoraDashboard() {
   const [prompt, setPrompt] = useState("");
   const [answer, setAnswer] = useState("");
   const [fileName, setFileName] = useState("");
+  const adminEmail = "krishanavinash@gmail.com";
+  const adminName = "Krishan Avinash";
 
   function demoReply() {
     const text = prompt.trim() || "Ask me anything...";
-    setAnswer(`Nexora AI is ready. Your prompt was: ${text}\n\nBackend services are available for streaming chat, RAG memory, file uploads, analytics, local embeddings, and model routing. Connect your account and developer credential panel to activate live calls.`);
+    setAnswer(`Nexora AI is ready. Your prompt was: ${text}\n\nBackend services are available for streaming chat, RAG memory, file uploads, analytics, local embeddings, LiveKit voice rooms, image workers, and distributed model routing.`);
   }
 
   return (
@@ -54,8 +56,8 @@ export default function NexoraDashboard() {
           <a>⌘ Integrations</a>
           <a>⚙ Settings</a>
         </nav>
-        <div className="upgrade-card"><div className="crown">♕</div><h3>Upgrade to Pro</h3><p>Unlock advanced models, longer context, and premium features.</p><button>Upgrade Now</button></div>
-        <div className="profile"><div className="avatar">A</div><div><b>Alex Morgan</b><small>alex@morgantech.io</small></div><span>⌄</span></div>
+        <div className="upgrade-card"><div className="crown">♕</div><h3>Upgrade to Pro</h3><p>Unlock advanced models, longer context, LiveKit voice, and premium automations.</p><button>Upgrade Now</button></div>
+        <div className="profile"><div className="avatar">K</div><div><b>{adminName}</b><small>{adminEmail}</small></div><span>⌄</span></div>
       </aside>
 
       <main className="workspace">
@@ -73,7 +75,7 @@ export default function NexoraDashboard() {
           <section className="center-column">
             <div className="assistant-card">
               <div className="card-title"><span><span className="orb">✦</span><b>AI Assistant</b></span><button>×</button></div>
-              <div className="welcome"><h3>Hello, Alex</h3><p>How can I help you today?</p></div>
+              <div className="welcome"><h3>Hello, Krishan</h3><p>How can I help you today?</p></div>
               <div className="prompt-box">
                 <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="Ask me anything..." />
                 <div className="prompt-actions">
@@ -114,7 +116,7 @@ export default function NexoraDashboard() {
           <aside className="right-column">
             <div className="panel model-panel"><div className="section-head"><b>◉ Model Status</b><button>View All</button></div><div className="model-content"><div className="ring"><span>Local Model<small>● Active</small></span></div><div className="model-bars"><MetricBar label="Accuracy" value={96} text="96%" /><MetricBar label="Speed" value={66} text="1.2s" /><MetricBar label="Reliability" value={99} text="99.1%" /></div></div></div>
             <div className="panel memory-panel"><div className="section-head"><b>Memory & Context</b><button>Manage</button></div><div className="memory-row"><span>▣</span><b>Context Window</b><em>32K / 128K tokens</em></div><div className="bar large"><span style={{ width: "58%" }} /></div><div className="memory-row"><span>◎</span><b>Conversation Memory</b><em className="green">● High</em></div><div className="memory-row"><span>▤</span><b>Knowledge Base</b><em>Nexora Knowledge Hub</em></div></div>
-            <div className="panel voice-panel"><div className="section-head"><b>Voice Interaction</b><span>00:00:00</span></div><div className="wave"><span /><span /><span /><span /><button>🎙</button><span /><span /><span /><span /></div><div className="voice-controls"><button>Voice: Nova⌄</button><button>☷</button></div></div>
+            <div className="panel voice-panel"><div className="section-head"><b>LiveKit Voice Interaction</b><span>00:00:00</span></div><div className="wave"><span /><span /><span /><span /><button>🎙</button><span /><span /><span /><span /></div><div className="voice-controls"><button>Voice: Nova⌄</button><button>LiveKit</button></div></div>
             <div className="panel quick-panel"><div className="section-head"><b>Quick Actions</b><button>Edit</button></div><div className="quick-grid"><button>▤<span>Summarize<br/>Document</span></button><button>▥<span>Analyze<br/>Data</span></button><button>⌘<span>Generate<br/>Code</span></button><button>⚭<span>Translate<br/>Text</span></button></div></div>
           </aside>
         </section>
