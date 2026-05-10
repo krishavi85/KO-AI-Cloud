@@ -1,6 +1,6 @@
 from uuid import uuid4
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, PointStruct, VectorParams
+from qdrant_client.http.models import Distance, FieldCondition, Filter, MatchValue, PointStruct, VectorParams
 from app.config import settings
 from app.services.ollama_client import embed
 
@@ -52,7 +52,9 @@ def search_context(user_id: int, query: str, limit: int = 5) -> list[str]:
     hits = client.search(
         collection_name=settings.RAG_COLLECTION,
         query_vector=query_vector,
-        query_filter={"must": [{"key": "user_id", "match": {"value": user_id}}]},
+        query_filter=Filter(
+            must=[FieldCondition(key="user_id", match=MatchValue(value=user_id))]
+        ),
         limit=limit,
     )
     return [hit.payload.get("text", "") for hit in hits if hit.payload]
@@ -71,6 +73,9 @@ def inject_rag(messages: list, user_id: int) -> tuple[list, int]:
             self.role = role
             self.content = content
 
-    context = "\n\n".join([f"[RAG Chunk {i+1}]\n{c}" for i, c in enumerate(chunks)])
-    rag_msg = Msg("system", "Use this private document context when useful. If it is not relevant, ignore it.\n\n" + context)
+    context = "\n\n".join([f"[RAG Chunk {i + 1}]\n{c}" for i, c in enumerate(chunks)])
+    rag_msg = Msg(
+        "system",
+        "Use this private document context when useful. If it is not relevant, ignore it.\n\n" + context,
+    )
     return [rag_msg] + messages, len(chunks)
