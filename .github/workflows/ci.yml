@@ -1,0 +1,73 @@
+name: Nexora CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ko_ai
+          POSTGRES_USER: ko_ai_user
+          POSTGRES_PASSWORD: ko_ai_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    env:
+      APP_NAME: Nexora AI
+      ADMIN_EMAIL: krishanavinash@gmail.com
+      DATABASE_URL: postgresql+psycopg2://ko_ai_user:ko_ai_password@localhost:5432/ko_ai
+      REDIS_URL: redis://localhost:6379/0
+      OLLAMA_BASE_URL: http://localhost:11434
+      QDRANT_URL: http://localhost:6333
+      JWT_SECRET: ci_secret_for_tests_only
+      API_KEY_PREFIX: nexora_key
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install pytest httpx alembic
+      - name: Run tests
+        env:
+          PYTHONPATH: backend:.
+        run: pytest tests -q
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install
+      - name: Build frontend
+        run: npm run build
