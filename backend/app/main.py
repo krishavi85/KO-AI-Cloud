@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.config import settings
 from app.database import Base, engine
-from app.routers import admin, api_keys, auth, chat, files, media, models
+from app.middleware import CorrelationIdMiddleware
+from app.routers import admin, api_keys, auth, chat, conversations, files, media, models
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.APP_NAME)
 
+app.add_middleware(CorrelationIdMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,6 +22,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(api_keys.router)
 app.include_router(chat.router)
+app.include_router(conversations.router)
 app.include_router(files.router)
 app.include_router(admin.router)
 app.include_router(media.router)
@@ -30,17 +34,15 @@ def root():
     return {
         "name": settings.APP_NAME,
         "status": "running",
-        "mode": "standalone-local-ai-v2",
-        "features": [
-            "streaming-chat",
-            "qdrant-rag",
-            "file-upload-parsing",
-            "conversation-persistence",
-            "local-embeddings",
-            "multi-model-routing",
-            "admin-analytics",
-            "voice-scaffold",
-            "image-scaffold",
-            "distributed-gpu-scaffold",
-        ],
+        "mode": "nexora-ai-ultimate-local-first",
     }
+
+
+@app.get("/health/live")
+def liveness():
+    return {"status": "alive"}
+
+
+@app.get("/health/ready")
+def readiness():
+    return {"status": "ready", "app": settings.APP_NAME}
